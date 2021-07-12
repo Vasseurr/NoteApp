@@ -1,0 +1,63 @@
+
+
+
+SqLite kullansın,
+
+Mvvm 
+
+State Management olarak Provider kullansın.
+
+
+
+Not Uygulaması --
+
+-> bir formdan not başlığı ve not girilecek,
+
+--> diğer bir ekranda tüm notlar listelenecek. ( Tarih sırasına göre )
+
+
+
+MVVM 
+
+
+
+
+
+
+Flutter state management
+
+Provider  ,getx , bloc , redux 
+
+
+
+Widget  ->  int a;
+	Widget
+		Widget -> int b
+			Widget	
+				Widget
+
+					widget 
+						widget -> int c 
+
+
+
+MVVM 
+
+	DI(Dependecy Injection)
+	
+		(Viewmodel)
+	View 
+			(Repository)
+		->> Viewmodel 		(Service)
+				--> Repository
+						--> Service
+
+
+
+
+
+
+	View
+		->Viewmodel
+				->Repository (get from db)
+						->Service (db)
