@@ -4,6 +4,7 @@ import 'package:note_padd/home/viewmodel/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../locator.dart';
+import 'form.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,12 +12,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _viewModel = locator<HomeViewModel>();
+  /* var _viewModel = locator<HomeViewModel>();
   List<Note> noteList = <Note>[
-    new Note(0, 'note 1', 100),
-    new Note(1, 'note 2', 50),
-    new Note(2, 'note 3', 75)
-  ];
+    new Note('note 1', 100),
+    new Note('note 2', 50),
+    new Note('note 3', 75)
+  ];*/
+
+  final _viewModel = HomeViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -31,33 +34,49 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
                 itemBuilder: (context, index) {
                   return Container(
-                      height: 50,
+                      height: 100,
+                      width: 50,
                       margin: EdgeInsets.all(2),
-                      color: Colors.blue,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          //color: Colors.grey,
+                          borderRadius: BorderRadius.circular(10)),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(noteList[index].header +
+                          Text(_viewModel.notes[index].header +
                               " - " +
-                              noteList[index].note.toString()),
+                              _viewModel.notes[index].note.toString()),
                           RaisedButton(
+                            color: Colors.red,
+                            child: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                            ),
                             onPressed: () {
-                              deleteNote(index);
+                              _viewModel.deleteNote(index);
                             },
                           )
                         ],
                         //child: Text('${noteList[header]} - ${noteList[note]}'),
                       ));
                 },
-                itemCount: noteList.length);
+                itemCount: _viewModel.notes.length);
           } else {
             return Container();
           }
         },
-        future: getAllNotes(),
+        future: _viewModel.getAllNotes(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.greenAccent,
+        onPressed: () => Navigator.push(context,
+            new MaterialPageRoute(builder: (context) => new MyCustomForm())),
       ),
     );
   }
-
+/*
   Future<List<Note>> getAllNotes() async {
     //noteList.add(new Note(0, 'note 1', 100));
     //noteList.add(new Note(1, 'note 2', 50));
@@ -75,4 +94,6 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
+
+  addNote() {}*/
 }
