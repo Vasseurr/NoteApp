@@ -28,17 +28,19 @@ class Service with ServiceBase {
   @override
   Future<List<Note>> retrieveNotes() async {
     final Database db = await initializeDB();
-    final List<Map<String, Object>> result = await db.query('notes');
+    final List<Map<String, dynamic>> result = await db.query('notes');
     return result.map((e) => Note.fromMap(e)).toList();
   }
 
   @override
-  Future<void> deleteNote(int id) async {
+  Future<int> deleteNote(int id) async {
     final db = await initializeDB();
-    await db.delete(
+    return await db.delete('notes', where: '$id = ?', whereArgs: [id]);
+
+    /* db.delete(
       'notes',
       where: "id = ?",
       whereArgs: [id],
-    );
+    );*/
   }
 }

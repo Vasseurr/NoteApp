@@ -1,26 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:note_padd/core/base/view/base_view.dart';
+import 'package:note_padd/core/constants/navigations.dart';
+import 'package:note_padd/core/init/navigation/navigation_service.dart';
 import 'package:note_padd/home/model/note.dart';
+import 'package:note_padd/home/model/noteDTO.dart';
 import 'package:note_padd/home/service/repository.dart';
 import 'package:note_padd/home/view/home_page.dart';
+import 'package:note_padd/home/viewmodel/home_viewmodel.dart';
 
 import '../../locator.dart';
 
-class _NoteDTO {
-  String header = '';
-  int note;
-}
-
 class MyCustomForm extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _MyCustomFormState();
+  State<StatefulWidget> createState() => _MyCustomFormState();
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  _NoteDTO _data = new _NoteDTO();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  NoteDTO _data = NoteDTO();
 
-  var _repository = locator<Repository>();
   /*String _validateHeader(String value) {
 
     return null;
@@ -34,9 +33,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
   }
 
   void submit() {
-    if (this._formKey.currentState.validate()) {
+    if (_formKey.currentState.validate()) {
       //_formKey.currentState.save();
-      _repository.addNote(new Note(_data.header, _data.note));
+      //_repository.addNote(Note(_data.header, _data.note));
       print('Printing the input fields.');
       print('Header: ${_data.header}');
       print('Note: ${_data.note}');
@@ -46,56 +45,72 @@ class _MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    return BaseView<HomeViewModel>(
+      /*onModelReady: (model) async {
+        await model.getAllNotes();
+      },*/
+      builder: (context, model, child) {
+        return Scaffold(
+          appBar: AppBar(title: Text('Add Note')),
+          body: Container(
+            padding: EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: <Widget>[
+                  TextFormField(
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                          hintText: 'Note1', labelText: 'Note header'),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Değer boş";
+                        }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        _data.header = value;
+                      }),
+                  TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          hintText: '100', labelText: 'Enter note'),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Değer boş";
+                        }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        _data.note = int.parse(value);
+                      }),
+                  Container(
+                    width: screenSize.width,
+                    child: RaisedButton(
+                      child: Text(
+                        'Add',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          _formKey.currentState.save();
 
-    return Scaffold(
-      appBar: new AppBar(title: new Text('Add Note')),
-      body: new Container(
-        padding: new EdgeInsets.all(20.0),
-        child: Form(
-          key: this._formKey,
-          child: new ListView(
-            children: <Widget>[
-              new TextFormField(
-                  keyboardType: TextInputType.name,
-                  decoration: new InputDecoration(
-                      hintText: 'Note1', labelText: 'Note header'),
-                  //validator: this._validateHeader,
-                  onSaved: (String value) {
-                    this._data.header = value;
-                  }),
-              new TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: new InputDecoration(
-                      hintText: '100', labelText: 'Enter note'),
-                  //validator: this._validateNote,
-                  onSaved: (String value) {
-                    this._data.note = int.parse(value);
-                  }),
-              new Container(
-                width: screenSize.width,
-                child: RaisedButton(
-                  child: Text(
-                    'Add',
-                    style: new TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    if (this._formKey.currentState.validate()) {
-                      //_formKey.currentState.save();
-                      _repository.addNote(new Note(_data.header, _data.note));
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => new HomePage()));
-                    }
-                  },
-                  color: Colors.blue,
-                ),
-                margin: new EdgeInsets.only(top: 20.0),
-              )
-            ],
+                          model.addNote(Note(_data.header, _data.note));
+
+                          NavigationService.instance.navigateToPage(
+                              path: NavigationConstants.NOTELIST);
+                        }
+                      },
+                      color: Colors.blue,
+                    ),
+                    margin: EdgeInsets.only(top: 20.0),
+                  )
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

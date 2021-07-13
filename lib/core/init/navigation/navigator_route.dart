@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:note_padd/home/view/form.dart';
+import 'package:note_padd/home/view/home_page.dart';
 
 import '../../components/widgets/not_found.dart';
 import '../../constants/navigations.dart';
@@ -12,7 +14,12 @@ class NavigationRoute {
 
   Route<dynamic> generateRoute(args) {
     switch (args.name) {
-      case NavigationConstants.INTRO:
+      case NavigationConstants.NOTELIST:
+        return normalNavigate(HomePage());
+        break;
+      case NavigationConstants.FORM:
+        return normalNavigate(MyCustomForm());
+        break;
       default:
         return MaterialPageRoute(
           builder: (context) => NotFound(),
